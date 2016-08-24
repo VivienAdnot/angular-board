@@ -8,36 +8,44 @@
  * Service to fetch tickets
  */
 angular.module('appApp')
-    .factory('byKind', ['dataFetcher', function(dataFetcher) {
+    .factory('byKind', ['$http', function($http) {
 
-        var dataSource = dataFetcher.fetchAll("unitsByKind");
-        var aggregated = {};
+        var dataSourcePool = [
+            "units_by_kind_1.json",
+            "units_by_kind_2.json"
+        ];
 
-        // todo aggregate must be done after each fetch, not after fetchAll.
-        var aggregate = function() {
-            var eachNode = function(jsonObj) {
-                for (node in jsonObj) {
-                    if (jsonObj.hasOwnProperty(node)) {
-                        if (aggregated.hasOwnProperty(node) == true) {
-                            var oldSum = result[node];
-                            aggregated[node] = oldSum + jsonObj[node];
-                        } else {
-                            aggregated[node] = jsonObj[node];
-                        }
-                    }
-                }
-                return aggregated;
-            };
+        var result = {};
 
-            for (key in Object.keys(dataSource)) {
-                if (dataSource.hasOwnProperty(key)) {
-                    eachNode(dataSource[key]);
+        var counter = 0;
+
+        var aggregateNode = function(jsonObj) {
+            for (var key in jsonObj) {
+                if (jsonObj.hasOwnProperty(key)) {
+                    var oldSum = result[key] || 0;
+                    result[key] = oldSum + jsonObj[key];
                 }
             }
         };
 
-        return function() {
-            return aggregate();
+        var fetchAll = function(callback) {
+            for (var index = 0; index < dataSourcePool.length; index++) {
+                var url = dataSourcePool[index];
+
+                $http.get("json/" + url)
+                .then(function(response) {
+                    aggregateNode(response.data);
+
+                    counter++;
+                    if(counter == dataSourcePool.length) {
+                        callback(result);
+                    }
+                });
+            }
+        };
+
+        return function(callback) {
+            return fetchAll(callback);
         };
 
     }]);
