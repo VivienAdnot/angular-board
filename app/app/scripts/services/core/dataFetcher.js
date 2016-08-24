@@ -24,7 +24,7 @@ angular.module('appApp')
                 "units_1.json",
                 "units_2.json"
             ],
-            "units_by_kind": [
+            "unitsByKind": [
                 "units_by_kind_1.json",
                 "units_by_kind_2.json"
             ]
@@ -36,13 +36,13 @@ angular.module('appApp')
                 return {};
             }
 
-            var result = [];
+            var result = {};
 
             for (var index = 0; index < dataSource.length; index++) {
                 var url = dataSource[index];
 
                 $http.get(urlPrefix + url).then(function(response) {
-                    result.push(response.data);
+                    result[index] = response.data;
                 });
             }
 

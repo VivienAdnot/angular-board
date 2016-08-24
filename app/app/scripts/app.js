@@ -25,6 +25,11 @@ angular
         controller: 'AboutCtrl',
         controllerAs: 'about'
       })
+      .when('/bykind', {
+        templateUrl: 'views/byKind.html',
+        controller: 'ByKindCtrl',
+        controllerAs: 'bykind'
+      })      
       .otherwise({
         redirectTo: '/'
       });
