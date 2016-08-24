@@ -8,12 +8,12 @@
  * Service to fetch tickets
  */
 angular.module('appApp')
-  .factory('tickets', function () {
+  .factory('tickets', [ 'dataFetcher', function (dataFetcher) {
     
-      var tickets = [ 1, 2, 3];
+      var tickets = dataFetcher.fetchAll("tickets");
 
       return function() {
           return tickets;
       };
 
-  });
+  }]);

@@ -8,7 +8,8 @@
  * Controller of the appApp
  */
 angular.module('appApp')
-  .controller('AboutCtrl', [ 'tickets', function (tickets) {
-    this.tickets = tickets();
+// todo remove $scope from declarations, we don't have to do it'
+  .controller('AboutCtrl', [ 'tickets', '$scope', function (tickets, $scope) {
+    $scope.tickets = tickets();
   }]
 );
