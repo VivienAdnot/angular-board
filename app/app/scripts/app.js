@@ -20,16 +20,21 @@ angular
         controller: 'MainCtrl',
         controllerAs: 'main'
       })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl',
-        controllerAs: 'about'
+      .when('/ticket', {
+        templateUrl: 'views/ticket.html',
+        controller: 'TicketCtrl',
+        controllerAs: 'ticket'
       })
       .when('/bykind', {
         templateUrl: 'views/byKind.html',
         controller: 'ByKindCtrl',
         controllerAs: 'bykind'
-      })      
+      })
+      .when('/units', {
+        templateUrl: 'views/units.html',
+        controller: 'UnitCtrl',
+        controllerAs: 'units'
+      })
       .otherwise({
         redirectTo: '/'
       });

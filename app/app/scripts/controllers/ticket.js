@@ -9,7 +9,9 @@
  */
 angular.module('appApp')
 // todo remove $scope from declarations, we don't have to do it'
-  .controller('AboutCtrl', [ 'tickets', '$scope', function (tickets, $scope) {
-    $scope.tickets = tickets();
+  .controller('TicketCtrl', [ 'tickets', '$scope', function (tickets, $scope) {
+    tickets(function(data) {
+      $scope.tickets = data;
+    });    
   }]
 );
