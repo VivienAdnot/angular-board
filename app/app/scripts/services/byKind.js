@@ -8,7 +8,7 @@
  * Service to fetch tickets
  */
 angular.module('appApp')
-    .factory('byKind', ['query', function(query) {
+    .factory('byKind', ['query', 'aggregate', function(query, aggregate) {
 
         var result = {};
 
@@ -16,11 +16,10 @@ angular.module('appApp')
             for (var key in jsonObj) {
                 if (jsonObj.hasOwnProperty(key)) {
 
-                    var oldSum = result[key] || 0;
-                    result[key] = oldSum + jsonObj[key];
+                    aggregate.sum(result, key, jsonObj[key]);
                 }
             }
-        };
+        };        
 
         var queryAndAggregate = function(callback) {
             var queryCallback = function(error, data, last) {
@@ -30,6 +29,7 @@ angular.module('appApp')
                 }
 
                 aggregateNode(data);
+
                 if(last == true) {
                     callback(result);
                 }

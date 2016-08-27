@@ -8,27 +8,11 @@
  * Service to fetch tickets
  */
 angular.module('appApp')
-    .factory('units', ['query', function(query) { // todo factorize by kind, units and tickets
+    .factory('units', ['query', 'aggregate', function(query, aggregate) {
 
         var result = {};
 
         var averageTemp = {};
-
-        var setMin = function(key, newValue) {
-            var origKey = result[key]["min"];
-
-            if(!origKey || newValue < origKey) {
-                result[key]["min"] = newValue;
-            }
-        };
-
-        var setMax = function(key, newValue) {
-            var origKey = result[key]["max"];
-
-            if(!origKey || newValue > origKey) {
-                result[key]["max"] = newValue;
-            }
-        };
         
         var setAverageTemp = function(key, newValue) {
             var origKey = averageTemp[key];
@@ -38,16 +22,6 @@ angular.module('appApp')
             }
 
             averageTemp[key].push(newValue);
-        };
-
-        var addWeight = function(key, newValue) {
-            var origKey = result[key]["weight"];
-            if(!origKey) {
-                result[key]["weight"] = newValue;
-            }
-            else {
-                result[key]["weight"] += newValue;
-            }
         };
 
         var computeAverage = function() {
@@ -81,11 +55,13 @@ angular.module('appApp')
 
                     //min
                     var minNewValue = subObject["min"]; // todo variable name as enum
-                    setMin(key, minNewValue); // todo change the name
+                    //setMin(key, minNewValue); // todo change the name
+                    aggregate.min(result, key, minNewValue);
 
                     //max
                     var maxNewValue = subObject["max"]; // todo variable name as enum
-                    setMax(key, maxNewValue); // todo change the name
+                    //setMax(key, maxNewValue); // todo change the name
+                    aggregate.max(result, key, maxNewValue);
 
                     //average
                     var averageNewValue = subObject["average"]; // todo variable name as enum
@@ -93,7 +69,8 @@ angular.module('appApp')
 
                     //weight (todo: what should I do ? take the heavier ?)
                     var weightNewValue = subObject["weight"]; // todo variable name as enum
-                    addWeight(key, weightNewValue); // todo change the name                    
+                    //addWeight(key, weightNewValue); // todo change the name
+                    aggregate.sum(result, key, weightNewValue);
                 }
             }
         };

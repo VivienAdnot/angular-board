@@ -8,25 +8,13 @@
  * Service to fetch tickets
  */
 angular.module('appApp')
-    .factory('tickets', ['query', function(query) {
+    .factory('tickets', ['query', 'aggregate', function(query, aggregate) {
         var result = {};
-
-        var addValue = function(key, newValue) {
-            var origKey = result[key];
-            if(!origKey) {
-                result[key] = newValue;
-            }
-            else {
-                result[key] += newValue;
-            }
-        };                   
 
         var aggregateNode = function(jsonObj) { //todo rename select node
             for (var key in jsonObj) {
                 if (jsonObj.hasOwnProperty(key)) {
-                    var newValue = jsonObj[key];
-
-                    addValue(key, newValue); // todo change the name                    
+                    aggregate.sum(result, key, jsonObj[key]);
                 }
             }
         };
