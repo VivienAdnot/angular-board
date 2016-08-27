@@ -8,18 +8,11 @@
  * Service to fetch tickets
  */
 angular.module('appApp')
-    .factory('units', ['$http', function($http) { // todo factorize by kind, units and tickets
-
-        var dataSourcePool = [
-            "units_1.json",
-            "units_2.json"
-        ];
+    .factory('units', ['query', function(query) { // todo factorize by kind, units and tickets
 
         var result = {};
 
         var averageTemp = {};
-
-        var counter = 0;
 
         var setMin = function(key, newValue) {
             var origKey = result[key]["min"];
@@ -105,28 +98,25 @@ angular.module('appApp')
             }
         };
 
-        var fetchAll = function(callback) {
-            for (var index = 0; index < dataSourcePool.length; index++) {
-                var url = dataSourcePool[index];
+        var queryAndAggregate = function(callback) {
+            var queryCallback = function(error, data, last) {
+                if(error) {
+                    callback(error);
+                    return;
+                }
 
-                $http.get("json/" + url)
-                .then(function(response) {
-                    if(counter == 0) { // todo reset ??
-                        //averageTemp = [];
-                    }
-                    aggregateNode(response.data);
+                aggregateNode(data);
+                if(last == true) {
+                    result["average"] = computeAverage();
+                    callback(result);
+                }
+            };
 
-                    counter++;
-                    if(counter == dataSourcePool.length) {
-                        result["average"] = computeAverage();
-                        callback(result);
-                    }
-                });
-            }
+            query("units", queryCallback);
         };
 
         return function(callback) {
-            return fetchAll(callback);
-        };
+            return queryAndAggregate(callback);
+        };            
 
     }]);

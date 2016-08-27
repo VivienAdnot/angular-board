@@ -8,16 +8,8 @@
  * Service to fetch tickets
  */
 angular.module('appApp')
-    .factory('tickets', ['$http', function($http) {
-
-        var dataSourcePool = [
-            "tickets_1.json",
-            "tickets_2.json"
-        ];
-
+    .factory('tickets', ['query', function(query) {
         var result = {};
-
-        var counter = 0;
 
         var addValue = function(key, newValue) {
             var origKey = result[key];
@@ -39,24 +31,24 @@ angular.module('appApp')
             }
         };
 
-        var fetchAll = function(callback) {
-            for (var index = 0; index < dataSourcePool.length; index++) {
-                var url = dataSourcePool[index];
+        var queryAndAggregate = function(callback) {
+            var queryCallback = function(error, data, last) {
+                if(error) {
+                    callback(error);
+                    return;
+                }
 
-                $http.get("json/" + url)
-                .then(function(response) {
-                    aggregateNode(response.data); // todo rename aggregateNode => aggregateResponse
+                aggregateNode(data);
+                if(last == true) {
+                    callback(result);
+                }
+            };
 
-                    counter++;
-                    if(counter == dataSourcePool.length) {
-                        callback(result);
-                    }
-                });
-            }
+            query("tickets", queryCallback);
         };
 
         return function(callback) {
-            return fetchAll(callback);
-        };
+            return queryAndAggregate(callback);
+        };        
 
     }]);
