@@ -8,44 +8,38 @@
  * Service to fetch tickets
  */
 angular.module('appApp')
-    .factory('byKind', ['$http', function($http) {
-
-        var dataSourcePool = [
-            "units_by_kind_1.json",
-            "units_by_kind_2.json"
-        ];
+    .factory('byKind', ['query', function(query) {
 
         var result = {};
-
-        var counter = 0;
 
         var aggregateNode = function(jsonObj) {
             for (var key in jsonObj) {
                 if (jsonObj.hasOwnProperty(key)) {
+
                     var oldSum = result[key] || 0;
                     result[key] = oldSum + jsonObj[key];
                 }
             }
         };
 
-        var fetchAll = function(callback) {
-            for (var index = 0; index < dataSourcePool.length; index++) {
-                var url = dataSourcePool[index];
+        var queryAndAggregate = function(callback) {
+            var queryCallback = function(error, data, last) {
+                if(error) {
+                    callback(error);
+                    return;
+                }
 
-                $http.get("json/" + url)
-                .then(function(response) {
-                    aggregateNode(response.data);
+                aggregateNode(data);
+                if(last == true) {
+                    callback(result);
+                }
+            };
 
-                    counter++;
-                    if(counter == dataSourcePool.length) {
-                        callback(result);
-                    }
-                });
-            }
+            query("units_by_kind", queryCallback);
         };
 
         return function(callback) {
-            return fetchAll(callback);
+            return queryAndAggregate(callback);
         };
 
     }]);
