@@ -19,8 +19,24 @@ angular.module('appApp')
 
         var counter = 0;
 
-        var aggregateNode = function(id, jsonObj) {
-            result[id] = jsonObj;
+        var addValue = function(key, newValue) {
+            var origKey = result[key];
+            if(!origKey) {
+                result[key] = newValue;
+            }
+            else {
+                result[key] += newValue;
+            }
+        };                   
+
+        var aggregateNode = function(jsonObj) { //todo rename select node
+            for (var key in jsonObj) {
+                if (jsonObj.hasOwnProperty(key)) {
+                    var newValue = jsonObj[key];
+
+                    addValue(key, newValue); // todo change the name                    
+                }
+            }
         };
 
         var fetchAll = function(callback) {
@@ -29,7 +45,7 @@ angular.module('appApp')
 
                 $http.get("json/" + url)
                 .then(function(response) {
-                    aggregateNode(url, response.data);
+                    aggregateNode(response.data); // todo rename aggregateNode => aggregateResponse
 
                     counter++;
                     if(counter == dataSourcePool.length) {

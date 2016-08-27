@@ -8,7 +8,7 @@
  * Service to fetch tickets
  */
 angular.module('appApp')
-    .factory('units', ['$http', function($http) {
+    .factory('units', ['$http', function($http) { // todo factorize by kind, units and tickets
 
         var dataSourcePool = [
             "units_1.json",
@@ -47,6 +47,16 @@ angular.module('appApp')
             averageTemp[key].push(newValue);
         };
 
+        var addWeight = function(key, newValue) {
+            var origKey = result[key]["weight"];
+            if(!origKey) {
+                result[key]["weight"] = newValue;
+            }
+            else {
+                result[key]["weight"] += newValue;
+            }
+        };
+
         var computeAverage = function() {
             var result = {};
             for (var key in averageTemp) {
@@ -65,11 +75,7 @@ angular.module('appApp')
             }
 
             return result;
-        };
-
-        // var weight = function(newValue) {
-        //     // todo ???
-        // };                        
+        };                    
 
         var aggregateNode = function(jsonObj) {
             for (var key in jsonObj) {
@@ -83,13 +89,18 @@ angular.module('appApp')
                     //min
                     var minNewValue = subObject["min"]; // todo variable name as enum
                     setMin(key, minNewValue); // todo change the name
+
                     //max
                     var maxNewValue = subObject["max"]; // todo variable name as enum
                     setMax(key, maxNewValue); // todo change the name
+
                     //average
                     var averageNewValue = subObject["average"]; // todo variable name as enum
                     setAverageTemp(key, averageNewValue); // todo change the name
+
                     //weight (todo: what should I do ? take the heavier ?)
+                    var weightNewValue = subObject["weight"]; // todo variable name as enum
+                    addWeight(key, weightNewValue); // todo change the name                    
                 }
             }
         };
@@ -100,7 +111,7 @@ angular.module('appApp')
 
                 $http.get("json/" + url)
                 .then(function(response) {
-                    if(counter == 0) {
+                    if(counter == 0) { // todo reset ??
                         //averageTemp = [];
                     }
                     aggregateNode(response.data);
