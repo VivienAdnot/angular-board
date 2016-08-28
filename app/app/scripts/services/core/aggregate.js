@@ -5,30 +5,33 @@ angular.module('appApp')
             dataSource[key] = dataSource[key] || {};
         };
 
-        var min = function(dataSource, key, newValue) {
+        var min = function(dataSource, key, newValue, aggregateIdentifier) {
             initDateSource(dataSource, key);
+            aggregateIdentifier = aggregateIdentifier || "min";
 
-            if(!dataSource[key]["min"] || newValue < dataSource[key]["min"]) {
-                dataSource[key]["min"] = newValue;
+            if(!dataSource[key][aggregateIdentifier] || newValue < dataSource[key][aggregateIdentifier]) {
+                dataSource[key][aggregateIdentifier] = newValue;
             }
         };
 
-        var max = function(dataSource, key, newValue) {
+        var max = function(dataSource, key, newValue, aggregateIdentifier) {
             initDateSource(dataSource, key);
+            aggregateIdentifier = aggregateIdentifier || "max";
 
-            if(!dataSource[key]["max"] || newValue > dataSource[key]["max"]) {
-                dataSource[key]["max"] = newValue;
+            if(!dataSource[key][aggregateIdentifier] || newValue > dataSource[key][aggregateIdentifier]) {
+                dataSource[key][aggregateIdentifier] = newValue;
             }
         };
 
-        var sum = function(dataSource, key, newValue) {
+        var sum = function(dataSource, key, newValue, aggregateIdentifier) {
             initDateSource(dataSource, key);
+            aggregateIdentifier = aggregateIdentifier || "sum";
 
-            if(!dataSource[key]["sum"]) {
-                dataSource[key]["sum"] = 0;
+            if(!dataSource[key][aggregateIdentifier]) {
+                dataSource[key][aggregateIdentifier] = 0;
             }
 
-            dataSource[key]["sum"] += newValue;
+            dataSource[key][aggregateIdentifier] += newValue;
         };
 
         return {

@@ -70,7 +70,7 @@ angular.module('appApp')
                     //weight (todo: what should I do ? take the heavier ?)
                     var weightNewValue = subObject["weight"]; // todo variable name as enum
                     //addWeight(key, weightNewValue); // todo change the name
-                    aggregate.sum(result, key, weightNewValue);
+                    aggregate.sum(result, key, weightNewValue, "weight");
                 }
             }
         };
