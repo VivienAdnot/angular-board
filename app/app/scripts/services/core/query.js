@@ -2,22 +2,18 @@
 
 /**
  * @ngdoc function
- * @name appApp.service:Ticket
+ * @name inchApp.service:Ticket
  * @description
  * # TicketService
  * Service to fetch tickets
  */
-angular.module('appApp')
+angular.module('inchApp')
     .factory('query', ['$http', function($http) {
         var credentialsSet = false;
 
         var servers = {
-            "http://api1.example.com": {
-                name: "server1"
-            },
-            "http://api2.example.com": {
-                name: "server2"
-            }
+            "http://api1.example.com": {},
+            "http://api2.example.com": {}
         };
 
         var counter = 0;

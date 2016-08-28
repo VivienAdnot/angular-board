@@ -1,25 +1,16 @@
 'use strict';
 
-/**
- * @ngdoc overview
- * @name appApp
- * @description
- * # appApp
- *
- * Main module of the application.
- */
 angular
-    .module('appApp', [
-        'ngResource', //todo remove
+    .module('inchApp', [
         'ngRoute',
         'ngMockE2E'
     ])
     .config(function($routeProvider) {
         $routeProvider
-            .when('/ticket', {
-                templateUrl: 'views/ticket.html',
-                controller: 'TicketCtrl',
-                controllerAs: 'ticket'
+            .when('/tickets', {
+                templateUrl: 'views/tickets.html',
+                controller: 'TicketsCtrl',
+                controllerAs: 'tickets'
             })
             .when('/bykind', {
                 templateUrl: 'views/byKind.html',
@@ -32,7 +23,7 @@ angular
                 controllerAs: 'units'
             })
             .otherwise({
-                redirectTo: '/ticket'
+                redirectTo: '/tickets'
             });
     })
     .run(function($httpBackend) {

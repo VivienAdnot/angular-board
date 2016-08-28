@@ -1,4 +1,4 @@
-angular.module('appApp')
+angular.module('inchApp')
     .factory('aggregate', function() {
         var initDateSource = function(dataSource, key) {
             dataSource = dataSource || {};

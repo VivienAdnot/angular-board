@@ -1,13 +1,6 @@
 'use strict';
 
-/**
- * @ngdoc function
- * @name appApp.service:Ticket
- * @description
- * # TicketService
- * Service to fetch tickets
- */
-angular.module('appApp')
+angular.module('inchApp')
     .factory('units', ['query', 'aggregate', function(query, aggregate) {
 
         var result = {};
@@ -15,9 +8,7 @@ angular.module('appApp')
         var averageTemp = {};
         
         var setAverageTemp = function(key, newValue) {
-            var origKey = averageTemp[key];
-
-            if(!origKey) {
+            if(!averageTemp[key]) {
                 averageTemp[key] = [];
             }
 
@@ -29,14 +20,14 @@ angular.module('appApp')
             for (var key in averageTemp) {
                 if (averageTemp.hasOwnProperty(key)) {
                     
-                    var subArray = averageTemp[key];
+                    var extract = averageTemp[key];
                     var sum = 0;
 
-                    for(var i = 0; i < subArray.length; i++) {
-                        sum += subArray[i];
+                    for(var i = 0; i < extract.length; i++) {
+                        sum += extract[i];
                     }
 
-                    var average = sum / subArray.length;
+                    var average = sum / extract.length;
                     result[key] = average;
                 }
             }
@@ -44,33 +35,26 @@ angular.module('appApp')
             return result;
         };                    
 
-        var aggregateNode = function(jsonObj) {
-            for (var key in jsonObj) {
-                if (jsonObj.hasOwnProperty(key)) {
-                    var subObject = jsonObj[key];
+        var aggregateData = function(data) {
+            for (var key in data) {
+                if (data.hasOwnProperty(key)) {
+                    var extract = data[key];
 
                     if(!result[key]) {
                         result[key] = {};
                     }
 
                     //min
-                    var minNewValue = subObject["min"]; // todo variable name as enum
-                    //setMin(key, minNewValue); // todo change the name
-                    aggregate.min(result, key, minNewValue);
+                    aggregate.min(result, key, extract["min"]);
 
                     //max
-                    var maxNewValue = subObject["max"]; // todo variable name as enum
-                    //setMax(key, maxNewValue); // todo change the name
-                    aggregate.max(result, key, maxNewValue);
+                    aggregate.max(result, key, extract["max"]);
 
                     //average
-                    var averageNewValue = subObject["average"]; // todo variable name as enum
-                    setAverageTemp(key, averageNewValue); // todo change the name
+                    setAverageTemp(key, extract["average"]); // todo change the name
 
                     //weight (todo: what should I do ? take the heavier ?)
-                    var weightNewValue = subObject["weight"]; // todo variable name as enum
-                    //addWeight(key, weightNewValue); // todo change the name
-                    aggregate.sum(result, key, weightNewValue, "weight");
+                    aggregate.sum(result, key, extract["weight"], "weight");
                 }
             }
         };
@@ -82,7 +66,7 @@ angular.module('appApp')
                     return;
                 }
 
-                aggregateNode(data);
+                aggregateData(data);
                 if(last == true) {
                     result["average"] = computeAverage();
                     callback(result);

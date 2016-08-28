@@ -1,22 +1,15 @@
 'use strict';
 
-/**
- * @ngdoc function
- * @name appApp.service:Ticket
- * @description
- * # TicketService
- * Service to fetch tickets
- */
-angular.module('appApp')
+angular.module('inchApp')
     .factory('byKind', ['query', 'aggregate', function(query, aggregate) {
 
         var result = {};
 
-        var aggregateNode = function(jsonObj) {
-            for (var key in jsonObj) {
-                if (jsonObj.hasOwnProperty(key)) {
+        var aggregateData = function(data) {
+            for (var key in data) {
+                if (data.hasOwnProperty(key)) {
 
-                    aggregate.sum(result, key, jsonObj[key]);
+                    aggregate.sum(result, key, data[key]);
                 }
             }
         };        
@@ -28,7 +21,7 @@ angular.module('appApp')
                     return;
                 }
 
-                aggregateNode(data);
+                aggregateData(data);
 
                 if(last == true) {
                     callback(result);

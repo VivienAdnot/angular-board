@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="appApp">
+  <body ng-app="inchApp">
     <!--[if lte IE 8]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -25,11 +25,11 @@
       <div class="navbar navbar-default" role="navigation">
         <div class="container">
           <div class="collapse navbar-collapse" id="js-navbar-collapse">
-            
+
             <ul class="nav navbar-nav">
-              <li><a ng-href="#/ticket">Ticket</a></li>
+              <li><a ng-href="#/tickets">Tickets</a></li>
               <li><a ng-href="#/bykind">By Kind</a></li>
-              <li><a ng-href="#/units">Unit</a></li>
+              <li><a ng-href="#/units">Units</a></li>
             </ul>
           </div>
         </div>
@@ -63,9 +63,8 @@
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -79,7 +78,7 @@
         <script src="scripts/services/tickets.js"></script>
         <script src="scripts/services/units.js"></script>
 
-        <script src="scripts/controllers/ticket.js"></script>
+        <script src="scripts/controllers/tickets.js"></script>
         <script src="scripts/controllers/byKind.js"></script>
         <script src="scripts/controllers/units.js"></script>
         <!-- endbuild -->
