@@ -32,8 +32,8 @@ angular.module('appApp')
             };
         }
 
-        var fetchCredentials = function(callback) {// todo set real url http://example.com/credentials.json and mock it
-            $http.get("json/credentials/credentials.json")
+        var fetchCredentials = function(callback) {
+            $http.get("http://example.com/credentials.json")
             .then(function(response) {
                 var responseData = response.data;
 
@@ -80,13 +80,13 @@ angular.module('appApp')
                 for (var serverKey in servers) {
                     var server = servers[serverKey];
 
-                    //var completeUrl = serverKey + "/" + server.name + "/" + metricsType + ".json"; //todo mock
-                    var completeUrl = "json" + "/" + server.name + "/" + metricsType + ".json";
+                    var completeUrl = serverKey + "/" + metricsType + ".json";
 
                     $http.get(completeUrl, {
                         headers: server.httpHeaders
                     })
                     .then(function(response) {
+                        console.log(response.data);
                         counter++;
                         if(counter == keys.length) {
                             last = true;
