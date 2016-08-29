@@ -5,6 +5,6 @@ angular.module('inchApp')
     
     tickets(function(data) {
       $scope.tickets = data;
-    });    
+    });
   }]
 );
