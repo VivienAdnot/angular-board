@@ -63,9 +63,9 @@ angular.module('inchApp')
             query("units", function(promises) {
                 $q.all(promises).then(function(dataArr) {
 
-                    dataArr.reduce(function(last, now) {
-                        aggregateData(now.data);
-                    }, 0);
+                    dataArr.forEach(function(response) {
+                        aggregateData(response.data);
+                    });
 
                     result["average"] = computeAverage();
 
