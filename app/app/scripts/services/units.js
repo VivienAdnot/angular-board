@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('inchApp')
-    .factory('units', ['query', 'aggregate', function(query, aggregate) {
+    .factory('units', ['$q', 'query', 'aggregate', function($q, query, aggregate) {
 
         var result = {};
 
@@ -60,20 +60,20 @@ angular.module('inchApp')
         };
 
         var queryAndAggregate = function(callback) {
-            var queryCallback = function(error, data, last) {
-                if(error) {
-                    callback(error);
-                    return;
-                }
+            query("units", function(promises) {
+                $q.all(promises).then(function(dataArr) {
 
-                aggregateData(data);
-                if(last == true) {
+                    dataArr.reduce(function(last, now) {
+                        aggregateData(now.data);
+                    }, 0);
+
                     result["average"] = computeAverage();
-                    callback(result);
-                }
-            };
 
-            query("units", queryCallback);
+                    callback(result);
+                }, function(reason) {
+                    callback(reason);
+                });
+            });
         };
 
         return function(callback) {

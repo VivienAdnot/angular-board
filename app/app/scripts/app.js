@@ -76,6 +76,13 @@ angular
 
         //server 2
 
+        $httpBackend.whenGET("http://api2.example.com/units_by_kind.json")
+            .respond({
+                "Apartment": 150,
+                "Garage": 20,
+                "Ski Locker": 100
+            });        
+
         $httpBackend.whenGET("http://api2.example.com/units.json")
             .respond({
                 "total": {
@@ -97,12 +104,5 @@ angular
                 "2016-07-01": 5,
                 "2016-07-02": 5,
                 "2016-07-07": 6
-            });
-
-        $httpBackend.whenGET("http://api2.example.com/units_by_kind.json")
-            .respond({
-                "Apartment": 150,
-                "Garage": 20,
-                "Ski Locker": 100
             });
     });

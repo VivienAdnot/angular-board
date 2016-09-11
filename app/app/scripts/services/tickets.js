@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('inchApp')
-    .factory('tickets', ['query', 'aggregate', function(query, aggregate) {
+    .factory('tickets', ['$q', 'query', 'aggregate', function($q, query, aggregate) {
         var result = {};
 
         var aggregateData = function(data) { //todo rename select node
@@ -13,19 +13,18 @@ angular.module('inchApp')
         };
 
         var queryAndAggregate = function(callback) {
-            var queryCallback = function(error, data, last) {
-                if(error) {
-                    callback(error);
-                    return;
-                }
+            query("tickets", function(promises) {
+                $q.all(promises).then(function(dataArr) {
 
-                aggregateData(data);
-                if(last == true) {
+                    dataArr.reduce(function(last, now) {
+                        aggregateData(now.data);
+                    }, 0);
+
                     callback(result);
-                }
-            };
-
-            query("tickets", queryCallback);
+                }, function(reason) {
+                    callback(reason);
+                });
+            });
         };
 
         return function(callback) {

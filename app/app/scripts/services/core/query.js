@@ -71,6 +71,7 @@ angular.module('inchApp')
 
         var fetchAll = function(metricsType, callback) {
             var credentialsCallback = function() {
+                var promises = [];
                 var keys = Object.keys(servers);
 
                 for (var serverKey in servers) {
@@ -78,23 +79,13 @@ angular.module('inchApp')
 
                     var completeUrl = serverKey + "/" + metricsType + ".json";
 
-                    $http.get(completeUrl, {
+                    promises.push($http.get(completeUrl, {
                         headers: server.httpHeaders
-                    })
-                    .then(function(response) {
-                        console.log(response.data);
-                        counter++;
-                        if(counter == keys.length) {
-                            last = true;
-                        }
+                    }));
 
-                        callback(null, response.data, last);
-                    },
-                    function(response) {
-                        console.error("vivien catch error:");
-                        console.error(response);
-                    });
                 }
+
+                callback(promises);
             };
 
             setCredentials(function(error, data) {
