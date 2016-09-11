@@ -21,11 +21,10 @@ angular.module('inchApp')
                 if (averageTemp.hasOwnProperty(key)) {
                     
                     var extract = averageTemp[key];
-                    var sum = 0;
 
-                    for(var i = 0; i < extract.length; i++) {
-                        sum += extract[i];
-                    }
+                    var sum = extract.reduce(function(last, now) {
+                        return last + now;
+                    }, 0);
 
                     var average = sum / extract.length;
                     result[key] = average;
@@ -53,7 +52,7 @@ angular.module('inchApp')
                     //average
                     setAverageTemp(key, extract["average"]); // todo change the name
 
-                    //weight (todo: what should I do ? take the heavier ?)
+                    //weight
                     aggregate.sum(result, key, extract["weight"], "weight");
                 }
             }
