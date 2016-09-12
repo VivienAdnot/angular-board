@@ -26,7 +26,6 @@ describe('Service: query', function() {
         query("units_by_kind", queryCallback);
     });
     
-    
     var query;
 
     // Initialize the controller and a mock scope
