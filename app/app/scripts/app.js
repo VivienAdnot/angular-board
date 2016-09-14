@@ -27,8 +27,6 @@ angular
             });
     })
     .run(function($httpBackend) {
-        console.log("running");
-
         $httpBackend.whenGET(/views\/.*/).passThrough();
 
         $httpBackend.whenGET("http://example.com/credentials.json")

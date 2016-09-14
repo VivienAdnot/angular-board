@@ -8,7 +8,7 @@
  * Service to fetch tickets
  */
 angular.module('inchApp')
-    .factory('query', ['$http', function($http) {
+    .factory('query', ['$http', '$q',  function($http, $q) {
         var credentialsSet = false;
 
         var servers = {
@@ -71,7 +71,9 @@ angular.module('inchApp')
 
         var fetchAll = function(metricsType, callback) {
             var credentialsCallback = function() {
-                var promises = [];
+                var promisesContainer = [];
+                var promises = $q.all(promisesContainer);
+
                 var keys = Object.keys(servers);
 
                 for (var serverKey in servers) {
@@ -79,13 +81,14 @@ angular.module('inchApp')
 
                     var completeUrl = serverKey + "/" + metricsType + ".json";
 
-                    promises.push($http.get(completeUrl, {
+                    promisesContainer.push($http.get(completeUrl, {
                         headers: server.httpHeaders
                     }));
 
                 }
 
-                callback(promises);
+                //callback(promises);
+                return promises;
             };
 
             setCredentials(function(error, data) {

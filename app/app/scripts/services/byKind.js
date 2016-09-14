@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('inchApp')
-    .factory('byKind', ['$q', 'query', 'aggregate', function($q, query, aggregate) {
+    .factory('byKind', ['query', 'aggregate', function(query, aggregate) {
 
         var result = {};
 
@@ -11,21 +11,20 @@ angular.module('inchApp')
                     aggregate.sum(result, key, data[key]);
                 }
             }
-        };        
+        };
 
         var queryAndAggregate = function(callback) {
-            query("units_by_kind", function(promises) {
-                $q.all(promises).then(function(dataArr) {
-
+            query("units_by_kind")
+                .then(function(dataArr) {
                     dataArr.forEach(function(response) {
                         aggregateData(response.data);
                     });
 
                     callback(result);
-                }, function(reason) {
+                })
+                .catch(function(reason) {
                     callback(reason);
                 });
-            });
         };
 
         return function(callback) {
