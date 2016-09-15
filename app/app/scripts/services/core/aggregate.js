@@ -12,6 +12,8 @@ angular.module('inchApp')
             if(!dataSource[key][aggregateIdentifier] || newValue < dataSource[key][aggregateIdentifier]) {
                 dataSource[key][aggregateIdentifier] = newValue;
             }
+
+            return dataSource;
         };
 
         var max = function(dataSource, key, newValue, aggregateIdentifier) {
@@ -21,6 +23,8 @@ angular.module('inchApp')
             if(!dataSource[key][aggregateIdentifier] || newValue > dataSource[key][aggregateIdentifier]) {
                 dataSource[key][aggregateIdentifier] = newValue;
             }
+
+            return dataSource;
         };
 
         var sum = function(dataSource, key, newValue, aggregateIdentifier) {
@@ -32,6 +36,8 @@ angular.module('inchApp')
             }
 
             dataSource[key][aggregateIdentifier] += newValue;
+            
+            return dataSource;
         };
 
         return {

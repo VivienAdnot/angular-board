@@ -2,11 +2,10 @@
 
 angular.module('inchApp')
     .factory('units', ['$q', 'query', 'aggregate', function($q, query, aggregate) {
-
-        var result = {};
+        var service = {};
 
         var averageTemp = {};
-        
+
         var setAverageTemp = function(key, newValue) {
             if(!averageTemp[key]) {
                 averageTemp[key] = [];
@@ -32,9 +31,9 @@ angular.module('inchApp')
             }
 
             return result;
-        };                    
+        };         
 
-        var aggregateData = function(data) {
+        var aggregateData = function(result, data) {
             for (var key in data) {
                 if (data.hasOwnProperty(key)) {
                     var extract = data[key];
@@ -56,27 +55,35 @@ angular.module('inchApp')
                     aggregate.sum(result, key, extract["weight"], "weight");
                 }
             }
+
+            return result;
         };
 
-        var queryAndAggregate = function(callback) {
-            query("units", function(promises) {
-                $q.all(promises).then(function(dataArr) {
+        service.queryAndAggregate = function queryAndAggregate() {
+            var deferred = $q.defer();
 
-                    dataArr.forEach(function(response) {
-                        aggregateData(response.data);
-                    });
+            query.fetchAll("units")
+                .then(
+                    function(dataArr) {
+                        var result = {};
 
-                    result["average"] = computeAverage();
+                        dataArr.reduce(function(last, now) {
+                            return aggregateData(result, now.data);
+                        }, 0);
 
-                    callback(result);
-                }, function(reason) {
-                    callback(reason);
+                        result["average"] = computeAverage();
+                        deferred.resolve(result);
+                    },
+                    function(error) {
+                        deferred.reject(error);
+                    }
+                )
+                .catch(function(reason) {
+                    deferred.reject(reason);
                 });
-            });
+
+            return deferred.promise;
         };
 
-        return function(callback) {
-            return queryAndAggregate(callback);
-        };            
-
+        return service;
     }]);

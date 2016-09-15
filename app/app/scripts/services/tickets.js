@@ -2,33 +2,42 @@
 
 angular.module('inchApp')
     .factory('tickets', ['$q', 'query', 'aggregate', function($q, query, aggregate) {
-        var result = {};
+        var service = {};
 
-        var aggregateData = function(data) { //todo rename select node
+        var aggregateData = function(result, data) {
             for (var key in data) {
                 if (data.hasOwnProperty(key)) {
                     aggregate.sum(result, key, data[key]);
                 }
             }
+
+            return result;
         };
 
-        var queryAndAggregate = function(callback) {
-            query("tickets", function(promises) {
-                $q.all(promises).then(function(dataArr) {
+        service.queryAndAggregate = function queryAndAggregate() {
+            var deferred = $q.defer();
 
-                    dataArr.forEach(function(response) {
-                        aggregateData(response.data);
-                    });
+            query.fetchAll("tickets")
+                .then(
+                    function(dataArr) {
+                        var result = {};
 
-                    callback(result);
-                }, function(reason) {
-                    callback(reason);
+                        dataArr.reduce(function(last, now) {
+                            return aggregateData(result, now.data);
+                        }, 0);
+
+                        deferred.resolve(result);
+                    },
+                    function(error) {
+                        deferred.reject(error);
+                    }
+                )
+                .catch(function(reason) {
+                    deferred.reject(reason);
                 });
-            });
+
+            return deferred.promise;
         };
 
-        return function(callback) {
-            return queryAndAggregate(callback);
-        };        
-
+        return service;
     }]);

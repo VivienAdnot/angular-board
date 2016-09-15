@@ -1,34 +1,43 @@
 'use strict';
 
 angular.module('inchApp')
-    .factory('byKind', ['query', 'aggregate', function(query, aggregate) {
+    .factory('byKind', ['$q', 'query', 'aggregate', function($q, query, aggregate) {
+        var service = {};
 
-        var result = {};
-
-        var aggregateData = function(data) {
+        var aggregateData = function(result, data) {
             for (var key in data) {
                 if (data.hasOwnProperty(key)) {
                     aggregate.sum(result, key, data[key]);
                 }
             }
+
+            return result;
         };
 
-        var queryAndAggregate = function(callback) {
-            query("units_by_kind")
-                .then(function(dataArr) {
-                    dataArr.forEach(function(response) {
-                        aggregateData(response.data);
-                    });
+        service.queryAndAggregate = function queryAndAggregate() {
+            var deferred = $q.defer();
 
-                    callback(result);
-                })
+            query.fetchAll("units_by_kind")
+                .then(
+                    function(dataArr) {
+                        var result = {};
+
+                        dataArr.reduce(function(last, now) {
+                            return aggregateData(result, now.data);
+                        }, 0);
+
+                        deferred.resolve(result);
+                    },
+                    function(error) {
+                        deferred.reject(error);
+                    }
+                )
                 .catch(function(reason) {
-                    callback(reason);
+                    deferred.reject(reason);
                 });
+
+            return deferred.promise;
         };
 
-        return function(callback) {
-            return queryAndAggregate(callback);
-        };
-
+        return service;
     }]);
