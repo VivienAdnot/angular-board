@@ -6,13 +6,13 @@ angular.module('inchApp')
         units.queryAndAggregate()
             .then(
                 function(aggregated) {
-                    $scope.units = aggregated;
+                    $scope.results = aggregated;
                 },
                 function(error) {
-                    $scope.units = error;
+                    $scope.error = error;
                 }
             )
             .catch(function(reason) {
-                $scope.byKind = reason;
+                $scope.error = reason;
             });
     }]);
